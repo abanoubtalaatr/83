@@ -8,3 +8,5 @@ make database (task)
 #php artisan seed
 #php artisan test --parallel
 
+Vist Main page  ( localhost:8000/ )
+

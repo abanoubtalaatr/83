@@ -1,6 +1,6 @@
 #Install 
 
-make database (task)
+#create database it name (task)
 
 #npm run && npm run dev
 

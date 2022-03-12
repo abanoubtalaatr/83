@@ -21,9 +21,7 @@
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Daily Budget</th>
                             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Images</th>
-                            <th scope="col" class="relative px-6 py-3">
-                                <span class="sr-only">Edit</span>
-                            </th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider text-center">Controls</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -44,9 +42,10 @@
                                 {{ item.daily_budget }}
                             </td>
                             <td>
-                                <img :src=item.images>
+                                <img :src=item.images />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <a type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none " :href="'advertising-campaigns/view/'+item.id">View</a>
                                 <a type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none " :href="'advertising-campaigns/'+item.id">Edit</a>
                                 <button type="button" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none " @click="deleteCamp(item.id)">Delete</button>
                             </td>
@@ -72,21 +71,24 @@ export default {
     },
     methods:{
       deleteCamp(id){
-          axios.delete(`http://localhost:8000/api/advertising-campaigns/${id}`).then(response=>{
-              this.message = 'Advertising Campaign deleted successfully.'
-              window.setInterval(this.refresh, 1000);
+          axios.delete(`http://localhost:8000/api/advertising-campaigns/${id}`)
+              .then(response=>{
+                  this.deleteItem(id);
+                  this.$swal('Delete Successfully!!!');
           })
         },
-         refresh() {
-             window.location.reload();
-        },
-        showImage(id) {
-            this.show = id
+        deleteItem(id){
+            for (const item of this.lists) {
+                if(item.id == id) {
+                    this.lists.splice(item, 1);
+                }
+            }
         }
     },
     mounted() {
         axios.get('http://localhost:8000/api/advertising-campaigns').then(response=>{
-          this.lists = response.data.data
+          this.lists = response.data.data;
+
         })
     }
 }

@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Action\UploadImageAction;
 use App\Http\Requests\AdvertisingCampaignRequest;
 use App\Http\Resources\AdvertisingCampaignResource;
 use App\Models\AdvertisingCampaign;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Session\Store;
 use Illuminate\Support\Facades\Response;
-use Illuminate\Support\Facades\Storage;
 
 class AdvertisingCampaignController extends Controller
 {
@@ -28,14 +26,15 @@ class AdvertisingCampaignController extends Controller
      * AdvertisingCampaign a newly created resource in storage.
      *
      * @param \App\Http\Requests\AdvertisingCampaignRequest $request
+     * @param \App\Action\UploadImageAction $uploadImageAction
      * @return \App\Http\Resources\AdvertisingCampaignResource
      */
-    public function store(AdvertisingCampaignRequest $request): AdvertisingCampaignResource
+    public function store(AdvertisingCampaignRequest $request, UploadImageAction $uploadImageAction): AdvertisingCampaignResource
     {
         $advertisingCampaign = AdvertisingCampaign::create($request->validated());
 
         if($request->file('images')) {
-            $advertisingCampaign['image'] = Storage::putFile('images', $request->file('images'));
+            $advertisingCampaign['images'] =  $uploadImageAction($request);
         }
 
         return AdvertisingCampaignResource::make($advertisingCampaign);
@@ -57,17 +56,21 @@ class AdvertisingCampaignController extends Controller
      *
      * @param \App\Http\Requests\AdvertisingCampaignRequest $request
      * @param \App\Models\AdvertisingCampaign $advertisingCampaign
+     * @param \App\Action\UploadImageAction $uploadImageAction
      * @return \App\Http\Resources\AdvertisingCampaignResource
      */
-    public function update(AdvertisingCampaignRequest $request, AdvertisingCampaign $advertisingCampaign): AdvertisingCampaignResource
-    {
-        $advertisingCampaign = $request->validated();
+    public function update(
+        AdvertisingCampaignRequest $request,
+        AdvertisingCampaign $advertisingCampaign,
+        UploadImageAction $uploadImageAction
+    ): AdvertisingCampaignResource {
+        $data = $request->except('images');
 
         if($request->file('images')) {
-            $advertisingCampaign['image'] = Storage::putFile('images', $request->file('images'));
+            $data['images'] =  $uploadImageAction($request);
         }
 
-        $advertisingCampaign->update($request->validated());
+        $advertisingCampaign->update($data);
 
         return AdvertisingCampaignResource::make($advertisingCampaign->refresh());
     }

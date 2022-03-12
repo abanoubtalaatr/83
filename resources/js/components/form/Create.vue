@@ -42,7 +42,7 @@
                 <img v-if="url" :src="url" />
             </div>
 
-            <button  class="bg-orange-600 hover:bg-orange-400 transform duration-300 py-2 font-semibold rounded-sm" :class="disableTheButton ? 'bg-gray-500 hover:bg-gray-400':''">Create</button>
+            <button :disabled="disableTheButton"  class="bg-orange-600 hover:bg-orange-400 transform duration-300 py-2 font-semibold rounded-sm" :class="disableTheButton ? 'bg-gray-500 hover:bg-gray-400':''">Create</button>
 
         </section>
         </form>
@@ -69,7 +69,7 @@ export default {
           url: '',
           error: '',
           data : new FormData(),
-          disableTheButton:'',
+          disableTheButton:false,
       }
     },
     components:{
@@ -77,13 +77,13 @@ export default {
     methods:{
         register(){
             this.appendData()
-            this.disableButton ='disabled';
+            this.disableTheButton = true;
             axios.post('http://localhost:8000/api/advertising-campaigns', this.data).then(response=>{
                  this.successMessage = 'create campaign successfully.';
                  return window.location.href = '/'
             }).catch(error=>{
-                this.errors = error.response.data.errors;
                 this.disableTheButton = false;
+                this.errors = error.response.data.errors;
             })
         },
         onChange(e) {

@@ -23,3 +23,7 @@ Route::get('advertising-campaigns', function () {
 Route::get('advertising-campaigns/{id}', function () {
     return view('edit-advertising');
 });
+
+Route::get('advertising-campaigns/view/{id}', function (){
+   return view('view');
+});

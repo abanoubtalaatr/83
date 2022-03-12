@@ -7,6 +7,10 @@
 require('./bootstrap');
 
 window.Vue = require('vue').default;
+
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+Vue.use(VueSweetalert2);
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -21,7 +25,7 @@ window.Vue = require('vue').default;
 Vue.component('create', require('./components/form/Create.vue').default);
 Vue.component('index', require('./components/form/Index.vue').default);
 Vue.component('edit', require('./components/form/Edit.vue').default);
-
+Vue.component('view-test', require('./components/form/View-Test.vue').default);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application

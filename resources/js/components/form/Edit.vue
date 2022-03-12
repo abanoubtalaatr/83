@@ -27,7 +27,7 @@
                     <img v-if="url" :src="url" />
                 </div>
 
-                <button :disabled="disableTheButton"  class="bg-orange-600 hover:bg-orange-400 transform duration-300 py-2 font-semibold rounded-sm" :class="disableTheButton ? 'bg-gray-500 hover:bg-gray-400':''">Create</button>
+                <button :disabled="disableTheButton"  class="bg-orange-600 hover:bg-orange-400 transform duration-300 py-2 font-semibold rounded-sm" :class="disableTheButton ? 'bg-gray-500 hover:bg-gray-400':''">Edit</button>
 
             </section>
         </form>
@@ -60,11 +60,16 @@ export default {
     methods:{
          edit(){
              this.disableTheButton = true;
-            axios.patch(`http://localhost:8000/api/advertising-campaigns/${this.id}`, this.data).then(response=>{
-                return window.location.href = '/'
-            }).catch(error=>{
-                this.errors = error.data.response;
-                this.disableTheButton = false;
+             this.appendData();
+             let data = new FormData();
+             data.append('name', 'abanoub talaat');
+            console.log(data.entries());
+            axios.put(`http://localhost:8000/api/advertising-campaigns/${this.id}`, this.campaign)
+                .then(response=>{
+                    return window.location.href = '/'
+                }).catch(error=>{
+                    this.disableTheButton = false;
+                    this.errors = error.data.response;
             })
         },
         onChange(e) {
@@ -74,9 +79,7 @@ export default {
         },
         appendData(){
             for (const property in this.campaign) {
-                if(this.campaign[property] != '') {
-                    this.data.append(`${property}`, this.campaign[property])
-                }
+                this.data.append(property, this.campaign[property])
             }
         },
     },
@@ -84,7 +87,7 @@ export default {
         this.id = window.location.href.match(/[0-9]+/)['input'].split(/\//)[4];
 
         axios.get('http://localhost:8000/api/advertising-campaigns/'+ this.id).then(response=>{
-                this.campaign = response.data.data
+                this.campaign = response.data.data;
         });
     }
 
